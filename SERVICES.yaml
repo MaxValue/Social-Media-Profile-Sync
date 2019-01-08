@@ -1,0 +1,34 @@
+v: 0.1
+services:
+    9gag:
+        constraints:
+            photo:
+                max_size: 2MB
+                filetypes: [jpg, gif, png]
+                min_interval: 6d
+            displayname:
+                max_size: 20
+            bio:
+                max_size: 120
+        scopes:
+            Web:
+                requirements: [username, password]
+                auth:
+                  - url: https://9gag.com
+                  - url: https://9gag.com/login
+                    method: POST
+                    data:
+                        next: /
+                        username: '{username}'
+                        password: '{password}'
+                    response:
+                        status_codes: [200, 302]
+                fields:
+                    photo,displayname,gender,birthday,country,bio:
+                      - url: https://9gag.com/settings/profile
+                      - form: //form[@id="setting"]
+                        fill:
+                            avatar: '{photo}'
+                            fullName: '{displayname}'
+                        data:
+                            blogTitle: '{bio}'
